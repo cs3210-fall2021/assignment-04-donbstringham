@@ -4,9 +4,9 @@ This assignment you will have to write unit-tests for the existing Bookstore Cle
 
 **170** points.
 
-## Full Name
+## Don Stringham
 
-`Github username`
+`donbstringham`
 
 ## Information For **ALL** Exercises
 
