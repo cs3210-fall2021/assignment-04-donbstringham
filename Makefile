@@ -1,10 +1,10 @@
-# AUTHOR: your name here <$(REPO_OWNER)@ your email domain>
+# AUTHOR: Don Stringham <$(REPO_OWNER)@weber.edu>
 .DEFAULT_GOAL=clean
 
 # VARIABLES
 CC=go
 ALL_PACKAGES ?= $(shell go list ./...)
-APP_NAME ?= gord
+APP_NAME ?= bookstore.weber.edu
 BUILD_TIME ?= $(shell date +%FT%T%z)
 REPO_OWNER ?= $(shell cd .. && basename "$$(pwd)")
 VERSION ?= $(shell git describe --tags 2>/dev/null)
@@ -15,17 +15,17 @@ bld:
 
 bld.cli: clean
 	@echo Building $(VERSION)...
-	-mkdir -p ./bld
-	# GOOS=linux GOARCH=amd64 $(CC) build -a -o ./bld/$(APP_NAME).linux-amd64 -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
-	GOOS=darwin GOARCH=amd64 $(CC) build -a -o ./bld/$(APP_NAME).darwin-amd64 -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
-	# GOOS=windows GOARCH=amd64 $(CC) build -a -o ./bld/$(APP_NAME).windows-amd64.exe -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
+	-mkdir -p ./bin
+	# GOOS=linux GOARCH=amd64 $(CC) build -a -o ./bin/$(APP_NAME).linux-amd64 -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
+	GOOS=darwin GOARCH=amd64 $(CC) build -a -o ./bin/$(APP_NAME).darwin-amd64 -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
+	# GOOS=windows GOARCH=amd64 $(CC) build -a -o ./bin/$(APP_NAME).windows-amd64.exe -ldflags='-s -w -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Version=$(VERSION) -X github.com/$(REPO_OWNER)/$(APP_NAME)/ver.Buildtime=$(BUILD_TIME)' ./
 
-	cd ./bld && find . -name 'final*' | xargs -I{} tar czf {}.tar.gz {}
-	cd ./bld && shasum -a 256 * > sha256sum.txt
-	cat ./bld/sha256sum.txt
+	cd ./bin && find . -name 'final*' | xargs -I{} tar czf {}.tar.gz {}
+	cd ./bin && shasum -a 256 * > sha256sum.txt
+	cat ./bin/sha256sum.txt
 
 clean:
-	-rm -r ./bld
+	-rm -r ./bin
 
 info:
 	@echo VERSION: $(VERSION)
@@ -71,6 +71,10 @@ push:
 release:
 	git tag v$(V)
 	@read -p "Press enter to confirm and push to origin ..." && git push origin v$(V)
+	
+run:
+	open http://localhost:3000/book
+	bin/bookstore.weber.edu.darwin-amd64
 
 .PHONY: bld.cli clean clean.vendor info test test.with.flags coverage.html \
         release docs kill-docs open-docs
