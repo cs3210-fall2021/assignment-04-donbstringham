@@ -3,9 +3,13 @@ package book
 import (
 	"bookstore.weber.edu/domain"
 	"bookstore.weber.edu/domain/book"
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestCanaryInMemoryRepository(t *testing.T) {
+	assert.True(t, true)
+}
 
 func TestNewInMemRepository(t *testing.T) {
 	// arrange & act
@@ -15,9 +19,7 @@ func TestNewInMemRepository(t *testing.T) {
 	if err != nil {
 		t.Fatal("could not instantiate an InMemRepository", "ERROR")
 	}
-	if reflect.TypeOf(expected) != reflect.TypeOf(harness) {
-		t.Fatal("not type of InMemRepository", "ERROR")
-	}
+	assert.IsType(t, expected, harness,"not type of InMemRepository")
 }
 
 func TestInMemRepository_Write(t *testing.T) {
@@ -30,11 +32,17 @@ func TestInMemRepository_Write(t *testing.T) {
 	}
 	// act
 	id, err := harness.Write(b)
-	// assert
 	if err != nil {
 		t.Fatal("could not write a book to an InMemRepository", "ERROR")
 	}
-	if reflect.TypeOf(expected) != reflect.TypeOf(id) {
-		t.Fatal("not type of domain.ID", "ERROR")
+	actual, err := harness.ReadAll()
+	// assert
+	assert.IsType(t, expected, id,"not type of domain.ID")
+	found := false
+	for _,v := range actual {
+		if (v.Isbn == b.Isbn) {
+			found = true;
+		}
 	}
+	assert.True(t, found, "book in not in the repository")
 }
