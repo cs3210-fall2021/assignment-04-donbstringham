@@ -9,8 +9,8 @@ type InMemRepository struct {
 	repo []book.Book
 }
 
-func NewInMemRepository() (*InMemRepository, error) {
-	return &InMemRepository{}, nil
+func NewInMemRepository() *InMemRepository {
+	return &InMemRepository{}
 }
 
 func (i *InMemRepository) Write(b *book.Book) (domain.ID, error) {

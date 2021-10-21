@@ -1,27 +1,29 @@
 package port
 
 import (
-	"bookstore.weber.edu/usecase/book"
+	service "bookstore.weber.edu/service/book"
 	"fmt"
 	"log"
 	"net/http"
 )
 
 type HttpServer struct {
-	bookService book.Service
+	s service.Service
 }
 
-func NewHttpServer(b book.Service) *HttpServer {
-	return &HttpServer{bookService: b}
+func NewHttpServer(srvc service.Service) *HttpServer {
+	return &HttpServer{s: srvc}
 }
 
-func (h *HttpServer) Serve() {
-	http.HandleFunc("/book", h.bookIndex)
-	http.ListenAndServe(":3000", nil)
+func (h *HttpServer) BookHandler() {
+	http.HandleFunc("/book", h.bookGetAll)
 }
 
-func (h *HttpServer) bookIndex(w http.ResponseWriter, r *http.Request) {
-	bks, err := h.bookService.ListBooks()
+func (h *HttpServer) Serve(a string) {
+	http.ListenAndServe(a, nil)
+}
+func (h *HttpServer) bookGetAll(w http.ResponseWriter, r *http.Request) {
+	bks, err := h.s.ListBooks()
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)

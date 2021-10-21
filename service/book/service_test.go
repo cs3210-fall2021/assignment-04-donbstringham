@@ -28,11 +28,11 @@ func TestCanaryBookService(t *testing.T) {
 func TestNewService_Success(t *testing.T) {
 	// arrange
 	m := &MockBookRepository{}
-	e := &Service{
+	e := &BookService{
 		repo: m,
 	}
 	// act
-	a := NewService(m)
+	a := NewBookService(m)
 	// assert
 	assert.IsType(t, e, a, "not typeof Service")
 }
@@ -40,9 +40,9 @@ func TestNewService_Success(t *testing.T) {
 func TestNewService_Fail(t *testing.T) {
 	// arrange
 	m := &MockBookRepository{}
-	e := &Service{}
+	e := &BookService{}
 	// act
-	a := NewService(m)
+	a := NewBookService(m)
 	// assert
 	assert.NotEqual(t, e.repo, a.repo, "not equal types")
 }
@@ -50,7 +50,7 @@ func TestNewService_Fail(t *testing.T) {
 func TestService_CreateBook_Success(t *testing.T) {
 	// arrange
 	m := &MockBookRepository{}
-	h := NewService(m)
+	h := NewBookService(m)
 	eIdType := domain.NewID()
 	eId := tmpUUID
 	// act

@@ -2,23 +2,19 @@ package main
 
 import (
 	adapter "bookstore.weber.edu/adapter/book"
-	http "bookstore.weber.edu/port"
-	"bookstore.weber.edu/usecase/book"
+	"bookstore.weber.edu/port"
+	"bookstore.weber.edu/service/book"
 )
 
-type BookServices struct {
-	Service book.Service
-}
-
 func main() {
-	bs := *&BookServices{}
-	bs.configure()
-
-	webserver := http.NewHttpServer(bs.Service)
-	webserver.Serve()
+	a := confAdapter()
+	s := confService(a)
+	w := port.NewHttpServer(s)
+	w.BookHandler()
+	w.Serve(":3000")
 }
 
-func (b *BookServices) configure() {
+func confAdapter() *adapter.MysqlRepository {
 	a, _ := adapter.NewBookMysqlRepository(
 		"donstringham",
 		"letmein",
@@ -26,6 +22,10 @@ func (b *BookServices) configure() {
 		"3306",
 		"donstringham",
 	)
-	s := book.NewService(a)
-	b.Service = *s
+	return a
+}
+
+func confService(a *adapter.MysqlRepository) *book.BookService {
+	s := book.NewBookService(a)
+	return s
 }

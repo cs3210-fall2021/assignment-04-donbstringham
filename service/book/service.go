@@ -6,15 +6,15 @@ import (
 	domain "bookstore.weber.edu/domain"
 )
 
-type Service struct {
+type BookService struct {
 	repo Repository
 }
 
-func NewService(r Repository) *Service {
-	return &Service{repo: r}
+func NewBookService(r Repository) *BookService {
+	return &BookService{repo: r}
 }
 
-func (s *Service) CreateBook(i string, t string, a string, p float32) (domain.ID, error) {
+func (s *BookService) CreateBook(i string, t string, a string, p float32) (domain.ID, error) {
 	b, err := book.NewBook(i, t, a, p)
 	if err != nil {
 		return b.ID, err
@@ -26,7 +26,7 @@ func (s *Service) CreateBook(i string, t string, a string, p float32) (domain.ID
 	return id, nil
 }
 
-func (s *Service) ListBooks() ([]book.Book, error) {
+func (s *BookService) ListBooks() ([]book.Book, error) {
 	bks, err := s.repo.ReadAll()
 	if err != nil {
 		return nil, err

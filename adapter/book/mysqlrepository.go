@@ -10,9 +10,6 @@ import (
 type MysqlRepository struct {
 	db *sql.DB
 }
-type MysqlRow struct {
-	Rows *sql.Rows
-}
 
 func NewBookMysqlRepository(u string, p string, h string, prt string, dbn string) (*MysqlRepository, error) {
 	dsn := u + ":" + p + "@tcp(" + h + ":" + prt + ")/" + dbn + "?parseTime=true&timeout=10s&collation=utf8_general_ci"

@@ -19,7 +19,15 @@ type Repository interface {
 	Writer
 }
 
-type UseCases interface {
+type ServiceReader interface {
 	ListBooks() ([]book.Book, error)
-	CreateBook(i string, t string, a string, p float32) (*domain.ID, error)
+}
+
+type ServiceWriter interface {
+	CreateBook(i string, t string, a string, p float32) (domain.ID, error)
+}
+
+type Service interface {
+	ServiceReader
+	ServiceWriter
 }
