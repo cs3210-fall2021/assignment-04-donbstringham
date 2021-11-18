@@ -10,10 +10,19 @@ import (
 var tmpUUID = domain.NewID()
 
 // MockBookRepository
-type MockBookRepository struct{}
+type MockBookRepository struct {
+	r []book.Book
+}
 
 func (mbr *MockBookRepository) ReadAll() ([]book.Book, error) {
-	return nil, nil
+	b := book.Book{
+		Isbn:   "123456",
+		Title:  "Foo Bar",
+		Author: "John Doe",
+		Price:  1.23,
+	}
+	mbr.r = append(mbr.r, b)
+	return mbr.r, nil
 }
 
 func (mbr *MockBookRepository) Write(b *book.Book) (domain.ID, error) {
@@ -54,11 +63,9 @@ func TestService_CreateBook_Success(t *testing.T) {
 	eIdType := domain.NewID()
 	eId := tmpUUID
 	// act
-	aId, err := h.CreateBook("123457", "Foobar", "Mr. Foo Bar", 6.66)
-	if err != nil {
-		t.Fatal("could not create a book in the mock repository")
-	}
+	a, err := h.ListBooks()
 	// assert
-	assert.IsType(t, eIdType, aId, "not type of domain.ID")
-	assert.Equal(t, eId, aId)
+	assert.Equal(t, nil, err)
+	assert.IsType(t, eIdType, a[0].ID, "not type of domain.ID")
+	assert.Equal(t, eId, a[0].ID)
 }
